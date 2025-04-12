@@ -5,6 +5,30 @@ import { userMiddleware } from "../../middleware/user";
 
 export const userRouter = Router();
 
+userRouter.get("/currentUser", userMiddleware, async (req, res) => {
+  const userId = req.userId;
+  const user = await client.user.findUnique({
+    where: { id: userId },
+    include: {
+      avatar: {
+        select: {
+          imageUrl: true,
+        },
+      },
+    },
+  });
+  if (!user) {
+    res.status(404).json({ message: "User not found" });
+    return;
+  }
+  res.status(200).json({
+    id: user.id,
+    username: user.username,
+    avatarId: user.avatar?.imageUrl,
+    type: user.role,
+  });
+});
+
 userRouter.post("/metadata", userMiddleware, async (req, res) => {
   const parsedData = UpdateMetadataSchema.safeParse(req.body);
   if (!parsedData.success) {
@@ -28,7 +52,7 @@ userRouter.post("/metadata", userMiddleware, async (req, res) => {
 
 userRouter.get("/metadata/bulk", async (req, res) => {
   const userIdString = (req.query.ids ?? "[]") as string;
-  const userIds = (userIdString).slice(1, userIdString?.length - 1).split(",");
+  const userIds = userIdString.slice(1, userIdString?.length - 1).split(",");
 
   const metadata = await client.user.findMany({
     where: {
