@@ -3,7 +3,7 @@ import Signup from "./components/Signup";
 import Login from "./components/Signin";
 import Dashboard from "./components/Dashboard";
 import PrivateRoute from "./routes/PrivateRoute";
-import Profile from "./components/Profile";
+import SpaceDetailPage from "./components/spaces/SpaceDetails";
 
 export default function App() {
   return (
@@ -14,7 +14,7 @@ export default function App() {
         <Route element={<PrivateRoute />}>
           <Route path="/" element={<Dashboard />} />
         </Route>
-        <Route path="/profile" element={<Profile />} />
+        <Route path="/space/:id" element={<SpaceDetailPage />} />
         {/* 404 */}
         <Route path="*" element={<Login />} />
       </Routes>

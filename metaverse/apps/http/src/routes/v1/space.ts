@@ -212,6 +212,9 @@ spaceRouter.get("/:spaceId", async (req, res) => {
   }
   res.status(200).json({
     space: {
+      id: space.id,
+      name: space.name,
+      thumbnail: space.thumbnail,
       dimensions: `${space.width}x${space.height}`,
       elements: space.elements.map((element) => {
         return {
